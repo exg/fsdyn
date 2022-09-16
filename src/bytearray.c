@@ -16,17 +16,22 @@ struct byte_array {
     uint32_t ref_count;
 };
 
+static void init_byte_array(byte_array_t *array)
+{
+    array->cursor = 0;
+    array->size = 128;
+    if (array->size > array->max_size)
+        array->size = array->max_size;
+    array->data = fsalloc(array->size);
+    array->data[0] = 0;
+}
+
 byte_array_t *make_byte_array(size_t max_size)
 {
     byte_array_t *array = fsalloc(sizeof *array);
-    array->cursor = 0;
     array->max_size = max_size;
-    array->size = 128;
-    if (array->size > max_size)
-        array->size = max_size;
-    array->data = fsalloc(array->size);
-    array->data[0] = 0;
     array->ref_count = 1;
+    init_byte_array(array);
     return array;
 }
 
@@ -181,6 +186,13 @@ void byte_array_clear(byte_array_t *array)
 {
     array->cursor = 0;
     array->data[0] = 0;
+}
+
+uint8_t *byte_array_release(byte_array_t *array)
+{
+    uint8_t *data = array->data;
+    init_byte_array(array);
+    return data;
 }
 
 bool byte_array_resize(byte_array_t *array, size_t n, uint8_t c)

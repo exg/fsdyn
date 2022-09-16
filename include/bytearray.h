@@ -40,6 +40,7 @@ ssize_t byte_array_append_stream(byte_array_t *array,
                                  byte_array_read_cb read_cb, void *obj,
                                  size_t len);
 void byte_array_clear(byte_array_t *array);
+uint8_t *byte_array_release(byte_array_t *array);
 /*
  * If n is greater than the current size, the array is expanded as
  * needed with bytes equal to c. If n is smaller, the array sequence
